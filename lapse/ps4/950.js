@@ -17,16 +17,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 // 9.50, 9.51, 9.60
 
-export const pthread_offsets = new Map(
-  Object.entries({
-    pthread_create: 0x1c540,
-    pthread_join: 0x9560,
-    pthread_barrier_init: 0x24200,
-    pthread_barrier_wait: 0x1efb0,
-    pthread_barrier_destroy: 0x19450,
-    pthread_exit: 0x28ca0,
-  }),
-);
+export const pthread_offsets = new Map(Object.entries({
+    'pthread_create' : 0x1c540,
+    'pthread_join' : 0x9560,
+    'pthread_barrier_init' : 0x24200,
+    'pthread_barrier_wait' : 0x1efb0,
+    'pthread_barrier_destroy' : 0x19450,
+    'pthread_exit' : 0x28ca0,
+}));
 
 export const off_kstr = 0x769a88;
 export const off_cpuid_to_pcpu = 0x21a66c0;
