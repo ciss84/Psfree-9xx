@@ -1834,4 +1834,4 @@ export async function kexploit() {
         close(sd);
     }
 }
-setTimeout(kexploit, 1500);
+setTimeout(kexploit, 1000);
