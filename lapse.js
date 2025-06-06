@@ -145,7 +145,7 @@ function toogle_payload(PLfile) {
  req.onreadystatechange = function () {
   if (req.readyState == 4) {
    var PLD = req.response;
-   var payload_buffer = chain.sysp('mmap', 0, PLD.byteLength*4, 7, 0x1002, -1, 0);
+   var payload_buffer = chain.sysp('mmap', 0, PLD.byteLength*4, 7, 0x41000, -1, 0);
    var pl = array_from_address(payload_buffer, PLD.byteLength*4);
    var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
    var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
