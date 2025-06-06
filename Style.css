@@ -1,0 +1,357 @@
+body {
+    background-size: 100%;
+    background-repeat: no-repeat;
+    color: white;
+    text-align: center;
+    margin: 0px;
+    overflow: hidden;
+}
+
+.themes {
+    width: 98%;
+    margin: 0 auto;
+    margin-left: 2%;
+    margin-top: 2%;
+}
+
+.theme {
+    background: rgba(0, 0, 0, 0.75);
+    width: 14.1%;
+    text-align: center;
+    display: inline-block;
+    margin-right: 2.5%;
+    margin-bottom: 2.5%;
+}
+
+.theme img {
+    width: 100%;
+}
+
+.theme span {
+    color: white;
+    display: block;
+    padding: 10px;
+}
+.notification {
+    display: flex;
+    top: 3%;
+    right: 2%;
+    position: fixed;
+    background-color: rgba(30, 30, 50, 0.5);
+    color: rgb(255, 255, 255);
+    padding: 0px;
+    border-radius: 30px;
+    box-shadow: 0px 0px 5px;
+    font-weight: bold;
+    animation: slide 500ms;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes slide {
+    from {
+        transform: translateX(120%);
+    }
+
+    to {
+        transform: translateX(0%);
+    }
+}
+
+.notification2 {
+    display: flex;
+    top: 3%;
+    right: 2%;
+    position: fixed;
+    background-color: rgba(30, 30, 50, 0.5);
+    color: rgb(255, 255, 255);
+    padding: 0px;
+    border-radius: 30px;
+    box-shadow: 0px 0px 5px;
+    font-weight: bold;
+    animation: slide2 500ms;
+    justify-content: center;
+    align-items: center;    
+}
+
+@keyframes slide2 {
+    from {
+        transform: translateX(0%);
+    }
+
+    to {
+        transform: translateX(120%);
+    }
+}
+#myProgress {
+    border: 5px solid #FFFFFF;
+    border-radius: 5px;
+    background-color: #ddd;
+    height: 45px;
+    position: absolute;
+    top: -130;
+    bottom: 0;
+    left: 150;
+    right: 150;
+    margin: auto;
+}
+
+#myBar {
+    width: 0%;
+    height: 40px;
+    background-color: #1b1b2e
+        /*#201e45*/
+    ;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    font-size: 35px;
+    padding-top: 5px;
+}
+
+a {
+    text-decoration: none;
+}
+
+#jb-progress {
+    display: block;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 90px;
+    height: 34px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ca2222;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #2ab934;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(55px);
+    -ms-transform: translateX(55px);
+    transform: translateX(55px);
+}
+
+/*------ ADDED CSS ---------*/
+
+.on {
+    display: none;
+}
+
+.on,
+.off {
+    color: white;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    font-size: 10px;
+    font-family: Verdana, sans-serif;
+}
+
+input:checked+.slider .on {
+    display: block;
+}
+
+input:checked+.slider .off {
+    display: none;
+}
+
+/*--------- END --------*/
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    font-family: BFARNAZ;
+    font-size: 18px;
+    position: relative;
+    background-color: #dddddd;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+.vid {
+    object-fit: inherit;
+    position: fixed;
+    right: 0;
+    z-index: -1;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    opacity: 0.4;
+}
+
+.bg-darker {
+    background-color: #24272b !important;
+}
+
+button {
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 5px 20px 0 white;
+    border: 2px solid black;
+    border-radius: 10px 100px / 120px;
+    color: white;
+    text-decoration: none;
+    width: 200px;
+    height: 40px;
+    display: inline-table;
+    font-family: system-ui;
+    text-align: center;
+}
+
+button:focus,
+button:hover {
+    color: White;
+    box-shadow: 0 5px 50px 0 white;
+    background-color: #87FF33;
+    border-radius: 10px 100px / 120px;
+}
+
+h1 {
+    text-shadow: 0.1em 0.1em 0.2em black;
+    font-size: 25px;
+    text-align: center;
+    color: white;
+}
+
+#msgs2 {
+    font-weight: bold;
+    text-shadow: 4px 4px 4px black;
+    padding-right: 00px;
+    margin-right: 00px;
+    font-size: 17px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+#msgs {
+    text-shadow: 4px 4px 4px black;
+    font-size: 32px;
+}
+
+.about a {
+    float: left;
+    margin-left: 1.25%;
+    font-weight: bold;
+    margin-top: -5px;
+    font-size: 25px;
+    color: #87FF33;
+    text-shadow: 4px 4px 4px black;
+}
+
+.about2 a {
+    float: right;
+    margin-left: 1.25%;
+    font-weight: bold;
+    margin-top: -5px;
+    font-size: 25px;
+    color: #87FF33;
+    text-shadow: 4px 4px 4px black;
+}
+
+.theme a {
+   float: right;
+   margin-right: 1.25%;
+   font-weight: bold;
+   margin-top: 11px;
+   font-size: 25px;
+   color: #7CFD96;
+   text-shadow: 4px 4px 4px black;
+}
+
+.pointer {cursor: pointer;}
+.back {
+  float:right;
+  margin:18px;
+  font-size:25px;
+  text-align:center;
+  display:block;
+  line-height:35px;
+  width:10%;
+  text-decoration:none;
+  height:35px;
+  background:white;
+  color:black;
+  border-radius:15px;
+}
+  
+.back:hover{
+  border:2px solid white;
+  background:transparent;
+  box-sizing:border-box;
+  color:white;
+}

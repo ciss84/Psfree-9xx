@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Themes</title>
+<link rel="stylesheet prefetch" href="Style.css">
+</head>
+<body>
+ <div>
+  <h1 style="float:left;" >Themes</h1>
+  <a href="index.html" class="back" >Back > </a>
+ </div><hr style="clear:both;" >
+ <div class="themes" >
+ 	<div class="theme" ><img src="1.jpg" ><button class="pointer" onclick="set(0)">Select</button></div>
+ </div>
+<script type="text/javascript">
+ if(localStorage.getItem("theme")==null){
+   localStorage.setItem("theme","1.jpg")
+ }
+ document.body.style.background = "url('"+localStorage.getItem("theme")+"')"
+ document.body.style.backgroundSize = "cover"
+ var imgs = ["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg","6.jpg"];
+ render()
+ function render(){
+     document.querySelector(".themes").innerHTML=""
+	 for(let i=0;i<imgs.length;i++){
+	    var selectText = "Select"
+	    var textColor = "white"
+	    if(localStorage.theme==imgs[i]){
+	      selectText="Selected"
+	      textColor="green"
+	    }
+	 	document.querySelector(".themes").innerHTML+='<div class="theme" ><img src="'+imgs[i]+'" ><span style="color:'+textColor+';" onclick="set('+i+')">'+selectText+'</span></div>';
+	 }
+ }
+ function set(i){
+    localStorage.setItem("theme",imgs[i])
+    render()
+ 	document.body.style.background = "url('"+imgs[i]+"')"
+ 	document.body.style.backgroundSize = "cover"
+ }
+</script>
+</body>
+</html>

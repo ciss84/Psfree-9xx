@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html><head>
+<title>PSfree1.5.1b + Lapse</title>
+<link rel="stylesheet prefetch" href="Style.css">
+    <style>
+        .info {
+            overflow: hidden;
+            position: fixed;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+
+            font-size: 45px;
+            font-family: sans-serif;
+            color: #b8b8b8;
+
+            transform: translate(-50%, -50%);
+        }
+
+        .j {
+            font-size: 15px;
+            color: #2F3335;
+        }
+</style>
+<script>
+    if (window.applicationCache.status=='0')
+    {
+        window.location.replace("cache.html");
+    }
+</script>
+<script defer src="payload.js"></script>
+<script defer src="loader.js"></script>
+<script type=module src="alert.js"></script>
+</head>
+<body onload=load_exploit()>
+<div id="jb-progress">
+    <div id="notify"  style="display:;">
+        <img src="hen.png" alt="" width="100px" height="100px">
+        <p id="log"></p>
+    </div>	
+
+<h1 id="msgs" style="margin-top:30px;color:#e5e4e2">Auto GoldHen (FW 8.xx-9.xx)</h1>
+<h1 id=msgs2 style='font-size:25px;text-align:center;color:#e5e4e2;'>∆❍X❑</h1>
+<br>
+<div style='margin-top:15px;font-size:20px;text-align:center;color:#e5e4e2;'><B>Mods</B></div>
+<button style='margin-top:5px;font-size:17px;text-align:center;color:#FFFFFF' class="pointer" onclick=load_gtabeef138() onMouseOver="msgs2.innerHTML='Prx Installer gta5 rdr2'" ; onmouseout="msgs2.innerHTML='∆❍X❑'" type="button"><B> Prx Installer gta5 rdr2 </B></button></a>
+<br>
+<div style=margin-top:15px;font-size:20px;text-align:center;color:#e5e4e2;><B>Payloads</B></div>
+<button style='margin-top:5px;font-size:20px;text-align:center;color:withe;background-color: red;' class="pointer" onclick=load_otoolbox() onMouseOver="msgs2.innerHTML='add Option Debug feature'" ; onmouseout="msgs2.innerHTML='∆❍X❑'" type="button"><B> Orbis toolbox </B></button></a>
+<button style='font-size:20px;text-align:center;color:#FFFFFF' class="pointer" onclick=load_pkg() onMouseOver="msgs2.innerHTML='Backup Pkg to Usb v1.1'" ; onmouseout="msgs2.innerHTML='∆❍X❑'" type="button"><B> Backup Pkg </B></button></a>
+<button style='font-size:20px;text-align:center;color:#FFFFFF' class="pointer" onclick=load_dumper() onMouseOver="msgs2.innerHTML='Dump Games to a USB drive to be able to create fpkg files'" ; onmouseout="msgs2.innerHTML='∆❍X❑'" type="button"><B> Dumper Game </B></button></a>
+<br>
+<button style='margin-top:10px;font-size:20px;text-align:center;color:#FFFFFF' class="pointer" onclick=load_cacheinstall2() onMouseOver="msgs2.innerHTML='DB Backup'" ; onmouseout="msgs2.innerHTML='∆❍X❑'" type="button"><B> DB Backup </B></button></a>
+<button style='font-size:20px;text-align:center;color:#FFFFFF' class="pointer" onclick=load_cacheinstall() onMouseOver="msgs2.innerHTML='DB Restore'" ; onmouseout="msgs2.innerHTML='∆❍X❑'" type="button"><B> DB Restore </B></button></a>
+<br>
+<br>
+<br>
+<br><br><br><br><br><br><br>
+<button style="margin-top:15px;background-color:#781f1f;border-radius:50px;" type="button">
+FW- <span id="PS4fw"></span></button>
+<br><br>
+<div class="about2" style='margin-right:75px'><a href="theme.html" rel="noopener noreferrer"><button id = "enter" style='font-size:20px;text-align:center;color:#FFFFFF' class="pointer" onMouseOver="msgs2.innerHTML='Change Wallpaper'" ; onmouseout="msgs2.innerHTML='∆❍X❑'" type="button"><B>Themes</B></button></a></div>
+<br><br><br>
+<div style="background-color:#032140;color:white;position:fixed;left:0;bottom:-0px;width:100%;text-align:center;">
+<font style='color:#87FF33'>Modder & Dev : </font><a href="https://twitter.com/84Ciss" style='font-size:20px;text-align:center;color:yellow;'>@84Ciss</a> - Find Me In Tweeter if you have any kind of issues !&nbsp;<font style="font-size: 20px";style='color:#87FF33'>Pass = <span style="color:green" id=passCounter></span>&nbsp;&nbsp;:&nbsp;&nbsp;Fail = <span style="color:red" id=failCounter></span></font>
+<br><font style='color:#87FF33'>Special thanks : </font>*Many Many Thanks to all Contributors in PS4 Scene ∆❍X❑*<br>
+</div>
+<script>
+UA=navigator.userAgent.substring(navigator.userAgent.indexOf("6.72 (") + 28,navigator.userAgent.indexOf(") Apple"));
+if (UA=="layStation 4/9.00")UA="9.00";
+if (UA=="layStation 4/99.99")UA="99.99";
+if (UA!="9.00" && UA!="99.99")alert("This Is For PS4 FW9.00 Only!");
+PS4fw.innerHTML=""+UA+"";
+</script>
+
+<script type="text/javascript">
+ if(localStorage.getItem("theme")==null){
+   localStorage.setItem("theme","2.jpg")
+ }
+ document.body.style.background = "url('"+localStorage.getItem("theme")+"')"
+ document.body.style.backgroundSize = "cover"
+ var imgs = ["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg"];
+ render()
+ function render(){
+     document.querySelector(".themes").innerHTML=""
+	 for(let i=0;i<imgs.length;i++){
+	    var selectText = "Select"
+	    var textColor = "white"
+	    if(localStorage.theme==imgs[i]){
+	      selectText="Selected"
+	      textColor="green"
+	    }
+	 	document.querySelector(".themes").innerHTML+='<div class="theme" ><img src="'+imgs[i]+'" ><span style="color:'+textColor+';" onclick="set('+i+')">'+selectText+'</span></div>';
+	 }
+ }
+ function set(i){
+    localStorage.setItem("theme",imgs[i])
+    render()
+ 	document.body.style.background = "url('"+imgs[i]+"')"
+ 	document.body.style.backgroundSize = "cover"
+ }
+</script>
+<script>
+  var secondcheck = localStorage.getItem("CheckBOX2")
+  if (secondcheck == "true"){
+    document.getElementById("checkbox2").checked = true
+  }else {
+    document.getElementById("checkbox2").checked = false
+  }
+  function checkthebox2() {
+    var chkBox = document.getElementById("checkbox2")
+    if (chkBox.checked == true){
+      var checkbox_on = document.getElementById("checkbox2").checked = true
+      localStorage.setItem("CheckBOX2", checkbox_on)
+      LoadedMSG="GoldHEN Auto ON  !!!";
+      autopl();
+    }else if (chkBox.checked == false) {
+      var checkbox_off = document.getElementById("checkbox2").checked = false
+      localStorage.setItem("CheckBOX2", checkbox_off)
+      LoadedMSG="GoldHEN Auto OFF  !!!";
+      autopl();
+    }
+  }
+</script>
+    <script>
+        if (localStorage.passcount == null || localStorage.passcount == undefined) localStorage.passcount = 0;
+        if (localStorage.passCounter == null || localStorage.passCounter == undefined) {
+          passCounter.innerHTML = localStorage.passcount;
+        }
+        if (localStorage.failcount == null || localStorage.failcount == undefined) localStorage.failcount = 0;
+        if (localStorage.failCounter == null || localStorage.failCounter == undefined) {
+          failCounter.innerHTML = localStorage.failcount;
+        }
+    </script>
+</body>
+</html>
