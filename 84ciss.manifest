@@ -24,14 +24,9 @@ restore.bin
 send.js
 Style.css
 theme.html
-kpatch\800.bin
-kpatch\850.bin
-kpatch\900.bin
-kpatch\903.bin
-kpatch\950.bin
-lapse\ps4\800.js
-lapse\ps4\850.js
-lapse\ps4\852.js
+kpatch\900.elf
+kpatch\903.elf
+kpatch\950.elf
 lapse\ps4\900.js
 lapse\ps4\903.js
 lapse\ps4\950.js
@@ -43,8 +38,6 @@ module\offset.js
 module\rw.js
 module\utils.js
 module\view.js
-rop\ps4\800.js
-rop\ps4\850.js
 rop\ps4\900.js
 rop\ps4\950.js
 

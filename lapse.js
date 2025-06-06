@@ -41,9 +41,6 @@ import * as rop from './module/chain.js';
 import * as config from './config.js';
 
 // static imports for firmware configurations
-import * as fw_ps4_800 from "./lapse/ps4/800.js";
-import * as fw_ps4_850 from "./lapse/ps4/850.js";
-import * as fw_ps4_852 from "./lapse/ps4/852.js";
 import * as fw_ps4_900 from "./lapse/ps4/900.js";
 import * as fw_ps4_903 from "./lapse/ps4/903.js";
 import * as fw_ps4_950 from "./lapse/ps4/950.js";
@@ -75,16 +72,7 @@ const [is_ps4, version] = (() => {
 // set per-console/per-firmware offsets
 const fw_config = (() => {
   if (is_ps4) {
-    if (0x800 <= version && version < 0x850) {
-      // 8.00, 8.01, 8.03
-      return fw_ps4_800;
-    } else if (0x850 <= version && version < 0x852) {
-      // 8.50
-      return fw_ps4_850;
-    } else if (0x852 <= version && version < 0x900) {
-      // 8.52
-      return fw_ps4_852;
-    } else if (0x900 <= version && version < 0x903) {
+  if (0x900 <= version && version < 0x903) {
       // 9.00
       return fw_ps4_900;
     } else if (0x903 <= version && version < 0x950) {
@@ -1590,7 +1578,7 @@ function make_kernel_arw(pktopts_sds, dirty_sd, k100_addr, kernel_addr, sds) {
 
 // FUNCTIONS FOR STAGE: PATCH KERNEL
 
-async function get_binary(url) {
+async function get_patches(url) {
     const response = await fetch(url);
     if (!response.ok) {
         throw Error(
@@ -1626,8 +1614,10 @@ async function patch_kernel(kbase, kmem, p_ucred, restore_info) {
     // cr_sceCaps[1]
     kmem.write64(p_ucred.add(0x68), -1);
 
-    const buf = await get_binary(patch_elf_loc);
-    const patches = new View1(await buf);
+    const buf = await get_patches(patch_elf_loc);
+    // FIXME handle .bss segment properly
+    // assume start of loadable segments is at offset 0x1000
+    const patches = new View1(await buf, 0x1000);    
     let map_size = patches.size;
     const max_size = 0x10000000;
     if (map_size > max_size) {

@@ -546,16 +546,6 @@ function load_fw_specific(version) {
     throw RangeError("PS4 firmwares < 7.00 isn't supported");
   }
 
-  if (0x800 <= value && value < 0x850) {
-    // 8.00, 8.01, 8.03
-    return import("../rop/ps4/800.js");
-  }
-
-  if (0x850 <= value && value < 0x900) {
-    // 8.50, 8.52
-    return import("../rop/ps4/850.js");
-  }
-
   if (0x900 <= value && value < 0x950) {
     // 9.00, 9.03, 9.04
     return import("../rop/ps4/900.js");
