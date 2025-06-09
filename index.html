@@ -68,9 +68,13 @@ FW- <span id="PS4fw"></span></button>
 <script>
 UA=navigator.userAgent.substring(navigator.userAgent.indexOf("6.72 (") + 28,navigator.userAgent.indexOf(") Apple"));
 if (UA=="layStation 4/9.00")UA="9.00";
+if (UA=="layStation 4/9.03")UA="9.03";
+if (UA=="layStation 4/9.04")UA="9.04";
+if (UA=="layStation 4/9.50")UA="9.50";
+if (UA=="layStation 4/9.51")UA="9.51";
 if (UA=="layStation 4/9.60")UA="9.60";
 if (UA=="layStation 4/99.99")UA="99.99";
-if (UA!="9.00" &&UA!="9.60" && UA!="99.99")alert("This Is For PS4 FW9.60 Only!");
+if (UA!="9.00" && UA!="9.03" && UA!="9.04" && UA!="9.50" && UA!="9.51" && UA!="9.60" && UA!="99.99")alert("This Is For PS4 FW9.xx Only!");
 PS4fw.innerHTML=""+UA+"";
 </script>
 
