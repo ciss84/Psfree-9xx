@@ -556,9 +556,7 @@ function load_fw_specific(version) {
     if (0x900 <= value && value < 0x950) {
       // 9.00, 9.03, 9.04
       return import("../rop/ps4/900.js");
-    }
-
-    if (0x950 <= value && value < 0x1000) {
+    } else if (0x950 <= value && value < 0x1000) {
       // 9.50, 9.51, 9.60
       return import("../rop/ps4/950.js");
     }
