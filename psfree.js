@@ -72,7 +72,7 @@ const [is_ps4, version] = (() => {
 })();
 
 const ssv_len = (() => {
-  // All supported PS5 versions
+  // All supported PS5 versionsAdd commentMore actions
   if (!is_ps4) {
     return 0x50;
   }
