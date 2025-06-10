@@ -38,6 +38,16 @@ LoadedMSG="Backup Pkg v1.1 Loaded!!! Load your game!!!";
 LoadFromGHBLS('pkgbackup.bin');
 }
 
+function load_disabled_update(){
+LoadedMSG="Disabled Update Loaded!!!";
+LoadFromGHBLS('disabled_update.bin');
+}
+
+function load_enabled_update(){
+LoadedMSG="Enabled Update Loaded!!!";
+LoadFromGHBLS('enabled_update.bin');
+}
+
 function load_linux4gb(){
 LoadedMSG="Linux 4G Pro Loaded!!!";
 LoadFromGHBLS('linux4gbPhat.bin');
