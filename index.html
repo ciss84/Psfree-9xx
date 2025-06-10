@@ -105,28 +105,6 @@ PS4fw.innerHTML=""+UA+"";
  	document.body.style.backgroundSize = "cover"
  }
 </script>
-<script>
-  var secondcheck = localStorage.getItem("CheckBOX2")
-  if (secondcheck == "true"){
-    document.getElementById("checkbox2").checked = true
-  }else {
-    document.getElementById("checkbox2").checked = false
-  }
-  function checkthebox2() {
-    var chkBox = document.getElementById("checkbox2")
-    if (chkBox.checked == true){
-      var checkbox_on = document.getElementById("checkbox2").checked = true
-      localStorage.setItem("CheckBOX2", checkbox_on)
-      LoadedMSG="GoldHEN Auto ON  !!!";
-      autopl();
-    }else if (chkBox.checked == false) {
-      var checkbox_off = document.getElementById("checkbox2").checked = false
-      localStorage.setItem("CheckBOX2", checkbox_off)
-      LoadedMSG="GoldHEN Auto OFF  !!!";
-      autopl();
-    }
-  }
-</script>
     <script>
         if (localStorage.passcount == null || localStorage.passcount == undefined) localStorage.passcount = 0;
         if (localStorage.passCounter == null || localStorage.passCounter == undefined) {

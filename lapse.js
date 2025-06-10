@@ -145,7 +145,8 @@ export function toogle_payload(PLfile) {
 }
 
 function Exploit_done(){
-    toogle_payload('goldhen.bin');
+load_exploit_done();
+toogle_payload('goldhen.bin');
 }
 
 // sys/socket.h
@@ -1734,8 +1735,7 @@ export async function kexploit() {
     try {
         if (sysi('setuid', 0) == 0) {
             log("Not running kexploit again.");
-            load_exploit_success();
-            //Exploit_done();
+            load_exploit_already();
             return;
         }
     }
@@ -1796,10 +1796,7 @@ export async function kexploit() {
         await patch_kernel(kbase, kmem, p_ucred, restore_info);
               
         log('\nSTAGE: Exploit done');
-        //load_exploit_done();
-        setTimeout(load_exploit_done, 500);
-        //Exploit_done();
-        setTimeout(Exploit_done, 500);
+        Exploit_done();
     } finally {
         close(unblock_fd);
 
@@ -1820,4 +1817,4 @@ export async function kexploit() {
         close(sd);
     }
 }
-setTimeout(kexploit, 1000);
+setTimeout(kexploit, 1500);
