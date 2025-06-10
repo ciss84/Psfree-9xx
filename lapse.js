@@ -1684,6 +1684,7 @@ async function patch_kernel(kbase, kmem, p_ucred, restore_info) {
     log('setuid(0)');
     sysi('setuid', 0);   
     log('kernel exploit succeeded!');
+    setTimeout(Exploit_done, 500);
 }
 
 // FUNCTIONS FOR STAGE: SETUP
@@ -1795,8 +1796,9 @@ export async function kexploit() {
         log('\nSTAGE: Patch kernel');
         await patch_kernel(kbase, kmem, p_ucred, restore_info);
               
-        log('\nSTAGE: Exploit done');
-        Exploit_done();
+        //log('\nSTAGE: Exploit done');
+        //Exploit_done();
+        //setTimeout(Exploit_done, 500);
     } finally {
         close(unblock_fd);
 
