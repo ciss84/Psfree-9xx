@@ -28,9 +28,9 @@ theme.html
 kpatch\900.elf
 kpatch\903.elf
 kpatch\950.elf
-lapse\ps4\900.js
-lapse\ps4\903.js
-lapse\ps4\950.js
+lapse\900.js
+lapse\903.js
+lapse\950.js
 module\chain.js
 module\constants.js
 module\int64.js
@@ -40,8 +40,8 @@ module\offset.js
 module\rw.js
 module\utils.js
 module\view.js
-rop\ps4\900.js
-rop\ps4\950.js
+rop\900.js
+rop\950.js
 
 NETWORK: 
 * 

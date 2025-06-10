@@ -41,9 +41,9 @@ import * as rop from './module/chain.js';
 import * as config from './config.js';
 
 // static imports for firmware configurations
-import * as fw_ps4_900 from "./lapse/ps4/900.js";
-import * as fw_ps4_903 from "./lapse/ps4/903.js";
-import * as fw_ps4_950 from "./lapse/ps4/950.js";
+import * as fw_ps4_900 from "./lapse/900.js";
+import * as fw_ps4_903 from "./lapse/903.js";
+import * as fw_ps4_950 from "./lapse/950.js";
 
 const t1 = performance.now();
 
@@ -67,23 +67,20 @@ const [is_ps4, version] = (() => {
     return [is_ps4, version];
 })();
 
-// set per-console/per-firmware offsets
 const fw_config = (() => {
     if (is_ps4) {
-    if (0x900 <= version && version < 0x903) {
-      // 9.00
-      return fw_ps4_900;
-    } else if (0x903 <= version && version < 0x950) {
-      // 9.03, 9.04
-      return fw_ps4_903;
-    } else if (0x950 <= version && version < 0x1000) {
-      // 9.50, 9.51, 9.60
-      return fw_ps4_950;
+    if (0x900 <= config.target && config.target < 0x903) {
+       return fw_ps4_900;
     }
-  } else {
-    // TODO: PS5
-  }
-  throw new RangeError(`unsupported console/firmware: ps${is_ps4 ? "4" : "5"}, version: ${hex(version)}`);
+
+    if (0x903 <= config.target && config.target < 0x950) {
+       return fw_ps4_903;
+    }
+
+    if (0x950 <= config.target && config.target < 0x1000) {
+       return fw_ps4_950;
+    }
+   }
 })();
 
 const pthread_offsets = fw_config.pthread_offsets;
