@@ -72,18 +72,22 @@ const [is_ps4, version] = (() => {
 })();
 
 const ssv_len = (() => {
-    if (0x600 <= config.target && config.target < 0x650) {
-        return 0x58;
-    }
+  // All supported PS5 versions
+  if (!is_ps4) {
+    return 0x50;
+  }
 
-    // PS4 9.xx and all supported PS5 versions
-    if (config.target >= 0x900) {
-        return 0x50;
-    }
-
-    if (0x650 <= config.target && config.target < 0x900) {
-        return 0x48;
-    }
+  // PS4
+  if (0x600 <= version && version < 0x650) {
+    return 0x58;
+  }
+  if (0x650 <= version && version < 0x900) {
+    return 0x48;
+  }
+  if (0x900 <= version) {
+    return 0x50;
+  }
+  throw new RangeError(`unsupported console/firmware: ps${is_ps4 ? "4" : "5"}, version: ${hex(version)}`);
 })();
 
 // these constants are expected to be divisible by 2
