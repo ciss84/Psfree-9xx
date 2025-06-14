@@ -48,6 +48,11 @@ LoadedMSG="Enabled Update Loaded!!!";
 LoadFromGHBLS('enabled_update.bin');
 }
 
+function load_ps4debug900(){
+LoadedMSG="ps4debug 900 Loaded!!!";
+LoadFromGHBLS('ps4debug900.bin');
+}
+
 function load_linux4gb(){
 LoadedMSG="Linux 4G Pro Loaded!!!";
 LoadFromGHBLS('linux4gbPhat.bin');
