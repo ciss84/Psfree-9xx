@@ -58,7 +58,7 @@ const [is_ps4, version] = (() => {
     const version = value & 0xffff;
     const [lower, upper] = (() => {
         if (is_ps4) {
-            return [0x600, 0x1000];
+            return [0x600, 0x1001];
         } else {
             return [0x100, 0x600];
         }
@@ -77,7 +77,7 @@ const ssv_len = (() => {
     }
 
     // PS4 9.xx and all supported PS5 versions
-    if (0x900 <= config.target && config.target < 0x1000) {
+    if (0x900 <= config.target && config.target < 0x1001) {
         return 0x50;
     }
 
