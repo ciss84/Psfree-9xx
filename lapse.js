@@ -145,7 +145,7 @@ function toogle_payload(PLfile) {
 }
 
 function Exploit_done(){
-showMessage("GoldHen Loaded Successfully !..."),
+load_exploit_done();
 toogle_payload('goldhen.bin');
 }
 
