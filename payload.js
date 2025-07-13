@@ -3,19 +3,9 @@ LoadedMSG="Installer gta5 rdr2 prx Loaded !!!";
 LoadFromGHBLS('installergta5rdr2prx.bin');
 }
 
-function load_otoolbox(){
-LoadedMSG="Orbis-Toolbox Loaded !!!";
-LoadFromGHBLS('OrbisToolbox.bin');
-}
-
 function load_dumper(){
 LoadedMSG="Dumper v2 Loaded !!!";
 LoadFromGHBLS('gamedumper.bin');
-}
-
-function load_webrte(){
-LoadedMSG="WebRte Loaded !!!";
-LoadFromGHBLS('webrte.bin');
 }
 
 function load_ps4debug(){
@@ -47,26 +37,3 @@ function load_enabled_update(){
 LoadedMSG="Enabled Update Loaded!!!";
 LoadFromGHBLS('enabled_update.bin');
 }
-
-function load_ps4debug(){
-LoadedMSG="ps4debug Loaded!!!";
-LoadFromGHBLS('ps4debug.bin');
-}
-
-function load_linux4gb(){
-LoadedMSG="Linux 4G Pro Loaded!!!";
-LoadFromGHBLS('linux4gbPhat.bin');
-}
-
-function load_linux4gbp(){
-LoadedMSG="Linux 4G Pro Loaded!!!";
-LoadFromGHBLS('linux4gbpro.bin');
-}
-
-/*function load_gtabeef138() {
-    LoadedMSG="Installer gta5 rdr2 prx Loaded !!!";
-    window.payload_path = './ps4debug900.bin';
-    setTimeout(() => {
-        window.location.reload();
-    }, 3000); // 3 seconds delay
-}*/
