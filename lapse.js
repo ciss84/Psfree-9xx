@@ -1734,8 +1734,8 @@ export async function kexploit() {
     // If setuid is successful, we dont need to run the kexploit again
     try {
         if (sysi('setuid', 0) == 0) {
-            showMessage("GoldHen already loaded !..."),
             log("Not running kexploit again.");
+            load_exploit_already();
             //return;
             return true;
         }

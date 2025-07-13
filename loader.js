@@ -24,7 +24,7 @@ function load_exploit_already(){
     document.getElementById('notify').style.display = ''
     document.getElementById('notify').className = 'notification'
     setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89>*Jailbreak is already loaded !!!</h1>'; }, 50); 
-    setTimeout(ani2, 2000);
+    setTimeout(ani2, 4000);
 }
 
 function load_exploit_done(){
