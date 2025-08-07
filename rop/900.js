@@ -341,7 +341,7 @@ export class Chain900 extends Chain900Base {
         this.textarea.scrollLeft;
         // restore vtable
         this.webcore_ta.write64(0, this.old_vtable_p);
-    }
+    }      
 }
 export const Chain = Chain900;
 
