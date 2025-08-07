@@ -37,3 +37,8 @@ function load_enabled_update(){
 LoadedMSG="Enabled Update Loaded!!!";
 LoadFromGHBLS('enabled_update.bin');
 }
+
+function load_fix(){
+LoadedMSG="psfree fix Aio Loaded!!!";
+LoadFromGHBLS('psfree-fix.bin');
+}

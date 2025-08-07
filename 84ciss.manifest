@@ -21,6 +21,7 @@ loader.js
 payload.js
 pkgbackup.bin
 ps4debug.bin
+psfree-fix.bin
 psfree.js
 restore.bin
 send.js

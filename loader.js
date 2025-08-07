@@ -27,10 +27,17 @@ function load_exploit_already(){
     setTimeout(ani2, 4000);
 }
 
+function goldhen_already(){
+    document.getElementById('notify').style.display = ''
+    document.getElementById('notify').className = 'notification'
+    setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89>*GoldHen Bin Loader Loaded !!!</h1>'; }, 50); 
+    setTimeout(ani2, 4000);
+}
+
 function load_exploit_done(){
     document.getElementById('notify').style.display = ''
     document.getElementById('notify').className = 'notification'
-    setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89>*Jailbreak Success !!! GoldHEN v2.4b18.4 Loaded !!!</h1>'; }, 50); 
+    setTimeout(function(){document.getElementById('log').innerHTML ='<h1 style=color:#ebfa89>*Jailbreak Success !!! GoldHEN v2.4b18.5 Loaded !!!</h1>'; }, 50); 
     setTimeout(ani2, 4000);
 }
 
@@ -63,16 +70,3 @@ function LoadFromGHBLS(PLfile){
 function CalcTime(dur){hrs=Math.floor(dur/1000/60/60);min=Math.floor(dur/1000/60-hrs*60);sec=Math.floor(dur/1000-min*60);mil=dur.toString().slice(-3);if (min!=0){ShowDuration=" - WK Exploited In : "+min+" minute"+(min==1?"":"s")+", "+sec+" second"+(sec==1?"":"s");}else {ShowDuration=" - Exploited In: "+sec+" second"+(sec==1?"":"s");}}
 function StartTimer(){StartTime=Date.now();}
 function EndTimer(){EndTime=Date.now();CalcTime(EndTime=Date.now()-StartTime);document.title+=ShowDuration;}
-
-function transitionPage(){
-    // Hide to left / show from left
-    $("#enter").toggle("slide", {direction: "left"}, 500);
-
-    // Show from right / hide to right
-    $("#about-2").toggle("slide", {direction: "right"}, 500);
-}
-
-$(document).ready(function() {
-    $('#enter').click(transitionPage);
-    $('#about-2').click(transitionPage);
-});
